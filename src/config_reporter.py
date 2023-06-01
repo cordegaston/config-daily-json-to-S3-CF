@@ -19,17 +19,16 @@ import boto3
 from datetime import datetime
 import json
 import csv
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 
 today = datetime.now().strftime("%Y-%m-%d")  # Currnent day
 filename = f'/tmp/changed_resources-{today}.csv'  # CSV report filename
+s3_filename = f'changed_resources-{today}.csv' # CSV report s3 filename
 AGGREGATOR_NAME = os.environ['AGGREGATOR_NAME']  # AWS Config Aggregator name
-SENDER = os.environ['SENDER']  # SES Sender address
-RECIPIENT = os.environ['RECIPIENT']  # SES Recipient address
-
+BUCKET = os.environ['BUCKET_NAME'] # Bucket Name to store file
 
 # Generate the resource link to AWS Console UI
 def get_link(aws_region, resource_id, resource_type):
@@ -63,51 +62,27 @@ def create_report(AGGREGATOR_NAME, today, filename):
     print("Report generated " + filename)
 
 
-def send_email(today, SENDER, RECIPIENT, filename):
-    # The subject line for the email.
-    SUBJECT = f"AWS Config changes report {today}"
-    ATTACHMENT = filename
-    BODY_TEXT = "Hello,\r\nPlease see the attached file which includes the changes made during the last day."
-    ses = boto3.client('ses')
+def uploadFileS3(filename, BUCKET, s3_filename):
+    s3 = boto3.client('s3')
 
-    # The HTML body of the email.
-    BODY_HTML = """\
-    <html>
-    <head></head>
-    <body>
-    <p>Hello, please see the attached file which includes the changes made during the last day.</p>
-    </body>
-    </html>
-    """
-    CHARSET = "utf-8"
-    msg = MIMEMultipart('mixed')
-    msg['Subject'] = SUBJECT
-    msg['From'] = SENDER
-    msg['To'] = RECIPIENT
-    msg_body = MIMEMultipart('alternative')
-    textpart = MIMEText(BODY_TEXT.encode(CHARSET), 'plain', CHARSET)
-    htmlpart = MIMEText(BODY_HTML.encode(CHARSET), 'html', CHARSET)
-    msg_body.attach(textpart)
-    msg_body.attach(htmlpart)
-    att = MIMEApplication(open(ATTACHMENT, 'rb').read())
-    att.add_header('Content-Disposition', 'attachment',
-                   filename=os.path.basename(ATTACHMENT))
-    msg.attach(msg_body)
-    msg.attach(att)
-    # Provide the contents of the email.
-    response = ses.send_raw_email(
-        Source=SENDER,
-        Destinations=[
-            RECIPIENT
-        ],
-        RawMessage={
-            'Data': msg.as_string(),
-        }
-    )
-    print("Email sent! Message ID:"),
-    print(response['MessageId'])
+    try:
+        s3.upload_file(filename, BUCKET, s3_filename)
+        url = s3.generate_presigned_url(
+            ClientMethod='get_object',
+            Params={
+                'Bucket': BUCKET,
+                'Key': s3_filename
+            },
+            ExpiresIn=24 * 3600
+        )
+
+        print("Upload Successful", url)
+        return url
+    except FileNotFoundError:
+        print("The file was not found")
+        return None
 
 
 def config_reporter(event, lambda_context):
     create_report(AGGREGATOR_NAME, today, filename)
-    send_email(today, SENDER, RECIPIENT, filename)
+    uploadFileS3(filename, BUCKET, s3_filename)

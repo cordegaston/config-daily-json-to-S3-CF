@@ -44,19 +44,12 @@ class DailyConfigReporter(Stack):
             description="Name of AWS Config Aggregator"
         )
 
-        RECIPIENT = aws_cdk.CfnParameter(
+        BUCKET_NAME = aws_cdk.CfnParameter(
             self,
-            "RECIPIENT",
+            "BUCKET_NAME",
             type="String",
-            default='RECIPIENT@EMAIL.COM',
-            description="SES recipient email address"
-        )
-        SENDER = aws_cdk.CfnParameter(
-            self,
-            "SENDER",
-            type="String",
-            default='SENDER@EMAIL.COM',
-            description="SES sender email address"
+            default='BUCKET_NAME',
+            description="Bucket name for storage"
         )
         HOUR = aws_cdk.CfnParameter(
             self,
@@ -72,13 +65,6 @@ class DailyConfigReporter(Stack):
             default='50',
             description="The time (minute) the Lambda will run. For example: for 23:50 UTC, type 50"
         )
-        sesarn = aws_cdk.CfnParameter(
-            self,
-            "sesarn",
-            type="String",
-            default='arn:aws:ses:us-east-1:888888888888:identity/example.com',
-            description="The preconfigured SES arn, for example: arn:aws:ses:us-east-1:888888888888:identity/example.com"
-        )
         config_reporter_lambda = _lambda.Function(self, "config_reporter",
                                                         log_retention=logs.RetentionDays.ONE_MONTH,
                                                         code=_lambda.Code.from_asset(
@@ -89,42 +75,15 @@ class DailyConfigReporter(Stack):
                                                             60),
                                                         environment={
                                                             "AGGREGATOR_NAME": aggregator.value_as_string,
-                                                            "SENDER": SENDER.value_as_string,
-                                                            "RECIPIENT": RECIPIENT.value_as_string}
-                                                  )
+                                                            "BUCKET_NAME": BUCKET_NAME.value_as_string})
         config_reporter_lambda.add_to_role_policy(iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
             actions=[
-                'ses:SendRawEmail'
+                's3:*'
             ],
-            resources=[
-                sesarn.value_as_string],
-            conditions={
-                "ForAllValues:StringLike": {
-                    "ses:Recipients": RECIPIENT.value_as_string,
-                },
-                "StringLike": {
-                    "ses:FromAddress": SENDER.value_as_string
-                }
-            }
+            resources=[f'arn:aws:s3:::{BUCKET_NAME}']))
 
-        ))
-
-        config_reporter_lambda.add_to_role_policy(iam.PolicyStatement(
-            effect=iam.Effect.ALLOW,
-            actions=[
-                'config:SelectAggregateResourceConfig'
-            ],
-            resources=[
-                '*'
-            ],
-            conditions={
-                "StringEquals": {
-                    "aws:ResourceAccount": [aws_cdk.Aws.ACCOUNT_ID
-                                            ]
-                }
-            }
-        ))
+        
         rule = Rule(self, "ConfigDailyReporterCW",
                     schedule=Schedule.cron(
                         minute=MINUTE.value_as_string, hour=HOUR.value_as_string)
