@@ -20,9 +20,7 @@ from datetime import datetime
 import json
 import csv
 from botocore.exceptions import ClientError 
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.application import MIMEApplication
+
 
 today = datetime.now().strftime("%Y-%m-%d")  # Currnent day
 filename = f'/tmp/changed_resources-{today}.csv'  # CSV report filename

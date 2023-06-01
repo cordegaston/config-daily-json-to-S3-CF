@@ -28,6 +28,7 @@ from aws_cdk import (
     aws_logs as logs
 )
 import aws_cdk
+import aws_cdk.aws_sso as sso
 from constructs import Construct
 
 
@@ -44,11 +45,11 @@ class DailyConfigReporter(Stack):
             description="Name of AWS Config Aggregator"
         )
 
-        BUCKET_NAME = aws_cdk.CfnParameter(
+        BUCKETNAME = aws_cdk.CfnParameter(
             self,
-            "BUCKET_NAME",
+            "BUCKETNAME",
             type="String",
-            default='BUCKET_NAME',
+            default='BUCKETNAME',
             description="Bucket name for storage"
         )
         HOUR = aws_cdk.CfnParameter(
@@ -75,7 +76,7 @@ class DailyConfigReporter(Stack):
                                                             60),
                                                         environment={
                                                             "AGGREGATOR_NAME": aggregator.value_as_string,
-                                                            "BUCKET_NAME": BUCKET_NAME.value_as_string})
+                                                            "BUCKET_NAME": BUCKETNAME.value_as_string})
         config_reporter_lambda.add_to_role_policy(iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
             actions=[
