@@ -82,7 +82,7 @@ class DailyConfigReporter(Stack):
             actions=[
                 's3:*'
             ],
-            resources=[f'arn:aws:s3:::{BUCKET_NAME}']))
+            resources=[f'arn:aws:s3:::{BUCKETNAME}']))
 
         
         rule = Rule(self, "ConfigDailyReporterCW",
