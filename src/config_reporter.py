@@ -18,6 +18,7 @@ import os
 import boto3
 from datetime import datetime
 import json
+import logging
 import csv
 from botocore.exceptions import ClientError 
 
@@ -66,7 +67,9 @@ def uploadFileS3(filename, BUCKET, s3_filename):
     try:
         s3.upload_file(filename, BUCKET, object_name)
         print("Upload Successful")    
-    except FileNotFoundError:
+    
+    except ClientError as e:
+        logging.error(e)
         print("The file was not found")
         exit()
 
