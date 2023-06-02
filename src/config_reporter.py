@@ -60,7 +60,7 @@ def create_report(AGGREGATOR_NAME, today, filename):
     print("Report generated " + filename)
 
 
-def uploadFileS3(filename, BUCKET, s3_filename):
+def uploadFileS3(filename, BUCKET):
     s3 = boto3.client('s3')
     object_name = os.path.basename(filename)
 
@@ -76,4 +76,4 @@ def uploadFileS3(filename, BUCKET, s3_filename):
 
 def config_reporter(event, lambda_context):
     create_report(AGGREGATOR_NAME, today, filename)
-    uploadFileS3(filename, BUCKET, s3_filename)
+    uploadFileS3(filename, BUCKET)
