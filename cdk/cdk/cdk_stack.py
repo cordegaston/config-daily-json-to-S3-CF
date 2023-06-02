@@ -80,9 +80,10 @@ class DailyConfigReporter(Stack):
         config_reporter_lambda.add_to_role_policy(iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
             actions=[
-                's3:*'
+                "s3:*"
             ],
-            resources=[f'arn:aws:s3:::{BUCKETNAME.value_as_string}']))
+            resources=[f'arn:aws:s3:::{BUCKETNAME.value_as_string}',
+                       f'arn:aws:s3:::{BUCKETNAME.value_as_string}/*']))
         
         config_reporter_lambda.add_to_role_policy(iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
