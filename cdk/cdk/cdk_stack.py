@@ -83,7 +83,22 @@ class DailyConfigReporter(Stack):
                 's3:*'
             ],
             resources=[f'arn:aws:s3:::{BUCKETNAME.value_as_string}']))
-
+        
+        config_reporter_lambda.add_to_role_policy(iam.PolicyStatement(
+            effect=iam.Effect.ALLOW,
+            actions=[
+                'config:SelectAggregateResourceConfig'
+            ],
+            resources=[
+                '*'
+            ],
+            conditions={
+                "StringEquals": {
+                    "aws:ResourceAccount": [aws_cdk.Aws.ACCOUNT_ID
+                                            ]
+                }
+            }
+        ))
         
         rule = Rule(self, "ConfigDailyReporterCW",
                     schedule=Schedule.cron(
