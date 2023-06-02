@@ -24,7 +24,6 @@ from botocore.exceptions import ClientError
 
 today = datetime.now().strftime("%Y-%m-%d")  # Currnent day
 filename = f'/tmp/changed_resources-{today}.csv'  # CSV report filename
-s3_filename = f'changed_resources-{today}.csv' # CSV report s3 filename
 AGGREGATOR_NAME = os.environ['AGGREGATOR_NAME']  # AWS Config Aggregator name
 BUCKET = os.environ['BUCKET_NAME'] # Bucket Name to store file
 
@@ -62,23 +61,14 @@ def create_report(AGGREGATOR_NAME, today, filename):
 
 def uploadFileS3(filename, BUCKET, s3_filename):
     s3 = boto3.client('s3')
+    object_name = os.path.basename(filename)
 
     try:
-        s3.upload_file(filename, BUCKET, s3_filename)
-        url = s3.generate_presigned_url(
-            ClientMethod='get_object',
-            Params={
-                'Bucket': BUCKET,
-                'Key': s3_filename
-            },
-            ExpiresIn=24 * 3600
-        )
-
-        print("Upload Successful", url)
-        return url
+        s3.upload_file(filename, BUCKET, object_name)
+        print("Upload Successful")    
     except FileNotFoundError:
         print("The file was not found")
-        return None
+        exit()
 
 
 def config_reporter(event, lambda_context):
