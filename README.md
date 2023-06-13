@@ -41,6 +41,8 @@ You will also need to have a pre-configured Multi-Account AWS Config Aggregator 
 6. Check S3 Bucket.
 
 7. Configure cross account read access. 
+   
+   
    Create an IAM role in account to access bucket.
 ```
 {
