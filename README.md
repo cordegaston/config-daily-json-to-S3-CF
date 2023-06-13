@@ -43,7 +43,7 @@ You will also need to have a pre-configured Multi-Account AWS Config Aggregator 
 7. Configure cross account read access. 
    
    
-   Create an IAM role in account to access bucket.
+* Create an IAM role in account to access bucket.
 ```
 {
   "Version": "2012-10-17",
@@ -60,7 +60,7 @@ You will also need to have a pre-configured Multi-Account AWS Config Aggregator 
 } 
 ```
 
-   Configure Bucket policy
+ * Configure Bucket policy
    
  ```
 {
