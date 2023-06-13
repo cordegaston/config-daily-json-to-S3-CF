@@ -42,6 +42,42 @@ You will also need to have a pre-configured Multi-Account AWS Config Aggregator 
 5. The deployment will generate a report.
 6. Check S3 Bucket.
 
+7. Configure cross account read access. 
+   Create an IAM role in account to access bucket.
+   * ``` {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject"
+            ],
+            "Resource": "arn:aws:s3:::<BUCKET>/*"
+
+        }
+    ]
+} ```
+
+   Configure Bucket policy
+   * ```{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::<AccountB>:<user/AccountBUserName OR ROLE>"
+            },
+            "Action": [
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::<BUCKETNAME>/*"
+            ]
+        }
+    ]
+}```
+
+
 
 
 ## Security
