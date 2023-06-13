@@ -138,6 +138,13 @@ def create_report(AGGREGATOR_NAME, today, filename):
 def uploadFileS3(filename, BUCKET):
     s3 = boto3.client('s3')
     object_name = os.path.basename(filename)
+    try: 
+        response = s3.delete_object(
+            Bucket=BUCKET,
+            Key=object_name,)
+        print(response)
+    except:
+        pass
 
     try:
         s3.upload_file(filename, BUCKET, object_name)
