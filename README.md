@@ -22,9 +22,8 @@ You will also need to have a pre-configured Multi-Account AWS Config Aggregator 
 1. Amazon CloudWatch event - will trigger Lambda every day
 2. AWS Lambda - will run Python3 code which includes an AWS Config Query and create file in S3 Bucket.
 3. AWS Config - aggregator which will get a query from the Lambda function.
-4. Amazon Simple Email Service - will be used to send an email with the CSV file.
+4. AWS S3 - will store the json data to be processed.
 
-![](draw/config-daily-reporter.drawio.png)
 
 ### Getting Started
 
