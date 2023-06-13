@@ -5,7 +5,6 @@ The Config Daily Reporter solution can be used in order to generate a daily CSV 
 The report will include new or changed resources, with a link to the AWS Config UI.
 The reporter is triggered using a CloudWatch event, that will trigger a Lambda function. The Lambda will use S3 to create a file.
 
-Detailed instructions here: https://aws.amazon.com/blogs/mt/how-to-get-a-daily-report-for-your-resources-configuration-changes/
 
 ### Prerequisites
 Before getting started, make sure that you have a basic understating of the following:
@@ -28,7 +27,7 @@ You will also need to have a pre-configured Multi-Account AWS Config Aggregator 
 ### Getting Started
 
 
-1. ```git clone https://github.com/aws-samples/config-daily-report```
+1. ```git clone https://github.com/AbrictoSecurity/config-daily-json-to-S3.git```
 2. ```cd config-daily-report/cdk```
 3. ```cdk bootstrap```
 4. ```cdk deploy --parameters aggregator=<aggregator name>  --parameters BUCKET_NAME=<name of bucket to be stored>  --parameters HOUR=<time in UTC (hour)>  --parameters MINUTE=< time in UTC (minute)> --profile <profile of SSO> ```  
