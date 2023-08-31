@@ -19,7 +19,7 @@ You will also need to have a pre-configured Multi-Account AWS Config Aggregator 
 
 ### Architecture
 1. Amazon CloudWatch event - will trigger Lambda every day
-2. AWS Lambda - will run Python3 code which includes an AWS Config Query and create file in S3 Bucket.
+2. AWS Lambda - will run Python3 code which includes an AWS Config Query and update a json file in S3 Bucket.
 3. AWS Config - aggregator which will get a query from the Lambda function.
 4. AWS S3 - will store the json data to be processed.
 
