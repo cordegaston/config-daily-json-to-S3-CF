@@ -2,7 +2,7 @@
 # AWS Config Daily Reporter To JSON
  
 The Config Daily Reporter solution can be used in order to generate a daily JSON report.
-The report will include new or changed resources, with a link to the AWS Config UI.
+The report will include new or changed resources, gathering all the information about the resources to be processed through the Aardwolf Platform.
 The reporter is triggered using a CloudWatch event, that will trigger a Lambda function. The Lambda will use S3 to create a file.
 
 
