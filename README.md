@@ -1,7 +1,7 @@
 
-# AWS Config Daily Reporter
+# AWS Config Daily Reporter To JSON
  
-The Config Daily Reporter solution can be used in order to generate a daily CSV report.
+The Config Daily Reporter solution can be used in order to generate a daily JSON report.
 The report will include new or changed resources, with a link to the AWS Config UI.
 The reporter is triggered using a CloudWatch event, that will trigger a Lambda function. The Lambda will use S3 to create a file.
 
@@ -43,7 +43,7 @@ You will also need to have a pre-configured Multi-Account AWS Config Aggregator 
 7. Configure cross account read access. 
    
    
-* Create an IAM role in account to access bucket.
+* Create an IAM role in account to access bucket. (Within the reading organization account)
 ```
 {
   "Version": "2012-10-17",
@@ -61,7 +61,7 @@ You will also need to have a pre-configured Multi-Account AWS Config Aggregator 
 } 
 ```
 
- * Configure Bucket policy
+ * Configure Bucket policy. (Within the writing organization account)
    
  ```
 {
@@ -84,10 +84,6 @@ You will also need to have a pre-configured Multi-Account AWS Config Aggregator 
 
 
 
-
-
-## Security
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
 
 ## License
 This library is licensed under the MIT-0 License. See the LICENSE file.
