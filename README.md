@@ -28,7 +28,7 @@ You will also need to have a pre-configured Multi-Account AWS Config Aggregator 
 
 
 1. ```git clone https://github.com/AbrictoSecurity/config-daily-json-to-S3.git```
-2. ```cd config-daily-report/cdk```
+2. ```cd config-daily-json-to-S3/cdk```
 3. ```cdk bootstrap```
 4. ```cdk deploy --parameters aggregator=<aggregator name>  --parameters BUCKET_NAME=<name of bucket to be stored>  --parameters HOUR=<time in UTC (hour)>  --parameters MINUTE=< time in UTC (minute)> --profile <profile of SSO> ```  
     Replace the parameters as follows:
