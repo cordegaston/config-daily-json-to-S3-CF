@@ -12,7 +12,6 @@ Before getting started, make sure that you have a basic understating of the foll
 * Multi-Account Multi-Region Data Aggregation
 * AWS Lambda Function
 * Python and Boto3.
-* CDK environments.  
 
 You will also need to have a pre-configured Multi-Account AWS Config Aggregator and Amazon S3.
 
@@ -26,23 +25,22 @@ You will also need to have a pre-configured Multi-Account AWS Config Aggregator 
 
 ### Getting Started
 
-
-1. ```git clone https://github.com/AbrictoSecurity/config-daily-json-to-S3.git```
-2. ```cd config-daily-json-to-S3/cdk```
-3. ```cdk bootstrap```
-4. ```cdk deploy --parameters aggregator=<aggregator name>  --parameters BUCKET_NAME=<name of bucket to be stored>  --parameters HOUR=<time in UTC (hour)>  --parameters MINUTE=< time in UTC (minute)> --profile <profile of SSO> ```  
-    Replace the parameters as follows:
+1. ```git clone https://github.com/AbrictoSecurity/config-daily-json-to-S3-CF.git```
+2. ```Create bucket: cdk-hnb659fds-assets-<Account_ID>-<Region_of_CF> [these is for supporting files]```
+     a. Put the account id in the place of <Account_ID>
+     b. Put the cloud formations region in the place of <Region_of_CF>
+3. ```Upload supporting zips within the above created bucket. These will be found in Support folder.```
+4. ```Create the bucket.```
+5. ```Create an aggregator if you do not have one already established.```
+6. ```Create new cloud formation stack , uploading the “Aardwolf_AWS_DailyConfig” file.```
+7. ``` Input the parameters as follows:   ``` 
     * aggregator - Name of AWS Config Aggregator.
-    * BUCKET_NAME - Name of the Bucket to be deployed.
+    * BUCKET_NAME - Name of the Bucket [these is to store the output of the service].
     * HOUR - The hour (UTC) the Lambda will run.
     * MINUTE - The minute (UTC) the Lambda will run.
-    
-5. The deployment will generate a report.
-6. Check S3 Bucket.
-
-7. Configure cross account read access. 
-   
-   
+8. Check S3 Bucket.
+9. Configure cross account read access. 
+      
 * Create an IAM role in account to access bucket. (Within the reading organization account)
 ```
 {
